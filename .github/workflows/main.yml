@@ -49,11 +49,11 @@ jobs:
           echo "${{ secrets.SSH_KEY }}" | base64 -d > private_key.pem
           chmod 600 private_key.pem
 
-      - name: Deploy to remote server (install Docker + run app)
+      - name: Deploy to remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} << EOF
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "
             if ! command -v docker &> /dev/null; then
-              echo "Docker not found. Installing..."
+              echo 'Installing Docker...'
               curl -fsSL https://get.docker.com | sh
               sudo usermod -aG docker \$USER
             fi
@@ -62,4 +62,4 @@ jobs:
             docker stop nodejs-demo || true
             docker rm nodejs-demo || true
             docker run -d --name nodejs-demo -p 80:3000 \$DOCKER_USER/nodejs-demo-app:latest
-EOF
+          "
