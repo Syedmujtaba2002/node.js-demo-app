@@ -41,6 +41,8 @@ jobs:
   deploy:
     needs: docker
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
     steps:
       - name: Decode and save SSH key
         run: |
@@ -49,19 +51,17 @@ jobs:
 
       - name: Deploy to remote server (install Docker + run app)
         run: |
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
-            # Install Docker if not installed
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} << EOF
             if ! command -v docker &> /dev/null; then
               echo "Docker not found. Installing Docker..."
               curl -fsSL https://get.docker.com | sh
-              sudo usermod -aG docker $USER
+              sudo usermod -aG docker \$USER
             else
               echo "Docker is already installed"
             fi
 
-            # Pull and run Docker container
-            docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-demo-app:latest
+            docker pull \$DOCKER_USER/nodejs-demo-app:latest
             docker stop nodejs-demo || true
             docker rm nodejs-demo || true
-            docker run -d --name nodejs-demo -p 80:3000 ${{ secrets.DOCKER_USERNAME }}/nodejs-demo-app:latest
+            docker run -d --name nodejs-demo -p 80:3000 \$DOCKER_USER/nodejs-demo-app:latest
 EOF
