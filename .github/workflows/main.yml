@@ -49,12 +49,15 @@ jobs:
           echo "${{ secrets.SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
 
-      - name: Deploy to remote server
+      - name: Deploy to Amazon Linux server
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "
             if ! command -v docker &> /dev/null; then
-              echo 'Installing Docker...'
-              curl -fsSL https://get.docker.com | sh
+              echo 'Installing Docker for Amazon Linux...'
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl enable docker
+              sudo systemctl start docker
               sudo usermod -aG docker \$USER
             fi
 
