@@ -61,8 +61,8 @@ jobs:
               sudo usermod -aG docker \$USER
             fi
 
-            docker pull \$DOCKER_USER/nodejs-demo-app:latest
-            docker stop nodejs-demo || true
-            docker rm nodejs-demo || true
-            docker run -d --name nodejs-demo -p 80:3000 \$DOCKER_USER/nodejs-demo-app:latest
+            sudo docker pull \$DOCKER_USER/nodejs-demo-app:latest
+            sudo docker stop nodejs-demo || true
+            sudo docker rm nodejs-demo || true
+            sudo docker run -d --name nodejs-demo -p 80:3000 \$DOCKER_USER/nodejs-demo-app:latest
           "
