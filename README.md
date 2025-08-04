@@ -29,6 +29,6 @@ This is a simple Node.js + Express web application that includes:
 | `SSH_USERNAME`   | SSH username (e.g., `ubuntu`, `ec2-user`)  |
 | `SSH_KEY`        | Base64-encoded private SSH key             |
 
-To encode your key:
-```bash
-base64 ~/.ssh/id_rsa
+
+
+
