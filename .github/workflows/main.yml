@@ -41,8 +41,6 @@ jobs:
   deploy:
     needs: docker
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
     steps:
       - name: Save SSH key
         run: |
@@ -52,6 +50,8 @@ jobs:
       - name: Deploy to Amazon Linux server
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "
+            DOCKER_USER='${{ secrets.DOCKER_USERNAME }}'
+
             if ! command -v docker &> /dev/null; then
               echo 'Installing Docker for Amazon Linux...'
               sudo yum update -y
